@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
@@ -8,6 +9,8 @@ var FileStore = require('session-file-store')(session);
 var passport = require('passport');
 var authenticate = require('./authenticate');
 var config = require('./config');
+var commentRouter = require('./routes/commentRouter');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -15,9 +18,10 @@ var dishRouter = require('./routes/dishRouter');
 var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
 const uploadRouter = require('./routes/uploadRouter');
+var favouriteRouter = require('./routes/favoriteRouter');
 
 const mongoose = require('mongoose');
-
+mongoose.Promise = require('bluebird');
 const Dishes = require('./models/dishes');
 const Promotions = require('./models/promotions');
 const Leaders = require('./models/leaders');
@@ -56,7 +60,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use('/comments',commentRouter);
 //app.use(cookieParser('12345-67890-09876-54321'));
 
 
@@ -81,23 +85,23 @@ app.use('/promotions',promoRouter);
 app.use('/leaders',leaderRouter);
 app.use('/imageUpload',uploadRouter);
 
-function auth (req, res, next) {
-  console.log(req.user);
+//function auth (req, res, next) {
+ // console.log(req.user);
 
-  if (!req.user) {
-    var err = new Error('You are not authenticated!');
-    err.status = 403;
-    next(err);
-  }
-  else {
-        next();
-  }
-}
-
-
+  //if (!req.user) {
+    //var err = new Error('You are not authenticated!');
+    //err.status = 403;
+    //next(err);
+ // }
+  //else {
+    //    next();
+ // }
+//}
 
 
-app.use(auth);
+
+
+//app.use(auth);
 
 
 // catch 404 and forward to error handler
